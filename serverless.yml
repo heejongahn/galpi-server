@@ -1,3 +1,5 @@
+org: heejongahn
+app: galpi
 # Welcome to Serverless!
 #
 # This file is the main config file for your service.
@@ -17,10 +19,16 @@ provider:
   runtime: nodejs10.x
   stage: dev
   region: ap-northeast-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: "arn:aws:secretsmanager:ap-northeast-2:591434487062:secret:${env:STAGE}/*"
 
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-dotenv-plugin
 
 functions:
   hello:
@@ -35,3 +43,9 @@ functions:
       - http:
           path: verify
           method: get
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - ssm:GetParameter
+    Resource: "arn:aws:ssm:ap-northeast-2:heejognahn@gmail.com:parameter/*"
