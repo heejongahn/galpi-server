@@ -1,10 +1,10 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "sourceMap": true,
-    "strict": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
-  }
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "sourceMap": true,
+        "strict": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    }
 }
