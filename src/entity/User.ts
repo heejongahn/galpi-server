@@ -1,23 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { AuthProviderUser } from "./AuthProviderUser";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { AuthProviderUser } from './AuthProviderUser';
 
-@Entity("users")
+@Entity('users')
 export class User {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
-  @Column()
-  email!: string;
+    @Column()
+    email!: string;
 
-  @Column()
-  phoneNumber!: string;
+    @Column({ nullable: true })
+    phoneNumber?: string;
 
-  @Column()
-  displayName!: string;
+    @Column({ nullable: true })
+    displayName?: string;
 
-  @OneToMany(
-    type => AuthProviderUser,
-    AuthProviderUser => AuthProviderUser.user
-  )
-  authProviderUsers!: AuthProviderUser[];
+    @OneToMany(
+        type => AuthProviderUser,
+        AuthProviderUser => AuthProviderUser.user,
+    )
+    authProviderUsers!: AuthProviderUser[];
 }

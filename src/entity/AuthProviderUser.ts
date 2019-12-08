@@ -1,33 +1,28 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn
-} from "typeorm";
-import { User } from "./User";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './User';
 
-export enum ProviderType {
-  google = "google",
-  facebook = "facebook",
-  twitter = "twitter"
+export enum AuthProviderType {
+    google = 'google',
+    facebook = 'facebook',
+    twitter = 'twitter',
+    firebase = 'firebase',
 }
 
-@Entity("users")
+@Entity()
 export class AuthProviderUser {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
-  @Column({
-    type: "enum",
-    enum: ProviderType
-  })
-  providerType!: ProviderType;
+    @Column({
+        type: 'enum',
+        enum: AuthProviderType,
+    })
+    providerType!: AuthProviderType;
 
-  @Column()
-  providerId!: string;
+    @Column()
+    providerId!: string;
 
-  @ManyToOne(type => User, { cascade: true })
-  @JoinColumn({ name: "fk_user_id" })
-  user!: User;
+    @ManyToOne(type => User, { cascade: true })
+    @JoinColumn({ name: 'fk_user_id' })
+    user!: User;
 }
