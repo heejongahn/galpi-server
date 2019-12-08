@@ -15,37 +15,37 @@ app: galpi
 
 service: galpi-server
 provider:
-  name: aws
-  runtime: nodejs10.x
-  stage: dev
-  region: ap-northeast-2
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource: "arn:aws:secretsmanager:ap-northeast-2:591434487062:secret:${env:STAGE}/*"
+    name: aws
+    runtime: nodejs10.x
+    stage: dev
+    region: ap-northeast-2
+    iamRoleStatements:
+        - Effect: Allow
+          Action:
+              - secretsmanager:GetSecretValue
+          Resource: 'arn:aws:secretsmanager:ap-northeast-2:591434487062:secret:${env:STAGE}/*'
 
 plugins:
-  - serverless-webpack
-  - serverless-offline
-  - serverless-dotenv-plugin
+    - serverless-webpack
+    - serverless-offline
+    - serverless-dotenv-plugin
 
 functions:
-  hello:
-    handler: src/server.hello
-    events:
-      - http:
-          path: hello
-          method: get
-  verify:
-    handler: src/server.verify
-    events:
-      - http:
-          path: verify
-          method: get
+    hello:
+        handler: src/server.hello
+        events:
+            - http:
+                  path: hello
+                  method: get
+    registerWithFirebase:
+        handler: src/server.registerWithFirebase
+        events:
+            - http:
+                  path: register/firebase
+                  method: post
 
 iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - ssm:GetParameter
-    Resource: "arn:aws:ssm:ap-northeast-2:heejognahn@gmail.com:parameter/*"
+    - Effect: Allow
+      Action:
+          - ssm:GetParameter
+      Resource: 'arn:aws:ssm:ap-northeast-2:heejognahn@gmail.com:parameter/*'
