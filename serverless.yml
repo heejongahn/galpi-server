@@ -37,6 +37,12 @@ functions:
             - http:
                   path: hello
                   method: get
+    verify:
+        handler: src/server.verify
+        events:
+            - http:
+                  path: verify
+                  method: get
     registerWithFirebase:
         handler: src/server.registerWithFirebase
         events:

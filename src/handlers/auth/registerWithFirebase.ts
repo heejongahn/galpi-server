@@ -3,6 +3,7 @@ import { verifyFirebaseIdToken } from '../../utils/auth/firebase';
 import { getConnection } from '../../database';
 import { User } from '../../entity/User';
 import { AuthProviderUser, AuthProviderType } from '../../entity/AuthProviderUser';
+import { generateUserToken } from '../../utils/auth/token';
 
 const index: Handler<APIGatewayEvent> = async (event, context) => {
     try {
@@ -46,14 +47,14 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
         return {
             statusCode: 200,
             body: JSON.stringify({
-                message: insertedUser.id,
+                message: generateUserToken(insertedUser),
             }),
         };
     } catch (e) {
         return {
             statusCode: 400,
             body: JSON.stringify({
-                message: 'registerWithFirebase: body is malformed.',
+                message: `registerWithFirebase: body is malformed. ${e.message}`,
             }),
         };
     }
