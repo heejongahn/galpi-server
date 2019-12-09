@@ -31,18 +31,15 @@ plugins:
     - serverless-dotenv-plugin
 
 functions:
+    authorizer:
+        handler: src/server.authorizer
     hello:
         handler: src/server.hello
         events:
             - http:
                   path: hello
                   method: get
-    verify:
-        handler: src/server.verify
-        events:
-            - http:
-                  path: verify
-                  method: get
+                  authorizer: authorizer
     registerWithFirebase:
         handler: src/server.registerWithFirebase
         events:
