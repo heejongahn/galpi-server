@@ -1,5 +1,5 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import verifyFirebaseIdToken from '../../utils/auth/firebase';
+import { verifyFirebaseIdToken } from '../../utils/auth/firebase';
 import { getConnection } from '../../database';
 import { User } from '../../entity/User';
 import { AuthProviderUser, AuthProviderType } from '../../entity/AuthProviderUser';
@@ -8,11 +8,11 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
     try {
         const parsedBody = JSON.parse(event.body || 'null');
 
-        if (parsedBody == null || parsedBody.email == null || parsedBody.token == null) {
+        if (parsedBody == null || parsedBody.token == null) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({
-                    message: 'registerWithFirebase: `email` and `token` is required.',
+                    message: 'registerWithFirebase: `token` is required.',
                 }),
             };
         }
@@ -39,7 +39,7 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
         const insertedAuthProviderUser = await authProviderUserRepository.save(authProviderUser);
 
         const user = new User();
-        user.email = parsedBody.email;
+        user.email = verifyResult.email;
         user.authProviderUsers = [insertedAuthProviderUser];
         const insertedUser = await userRepository.save(user);
 

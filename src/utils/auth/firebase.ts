@@ -20,6 +20,7 @@ async function getFirebaseServiceAccount() {
 interface VerifySuccess {
     success: true;
     token: string;
+    email: string;
 }
 
 interface VerifyFailed {
@@ -29,7 +30,7 @@ interface VerifyFailed {
 
 type VerifyResult = VerifySuccess | VerifyFailed;
 
-export default async function verifyFirebaseIdToken(idToken: string): Promise<VerifyResult> {
+export async function verifyFirebaseIdToken(idToken: string): Promise<VerifyResult> {
     try {
         if (admin.apps.length === 0) {
             const data = await getFirebaseServiceAccount();
@@ -38,10 +39,12 @@ export default async function verifyFirebaseIdToken(idToken: string): Promise<Ve
             });
         }
 
-        const { uid } = await admin.auth().verifyIdToken(idToken);
+        const result = await admin.auth().verifyIdToken(idToken);
+
         return {
             success: true,
-            token: uid,
+            token: result.uid,
+            email: result.email,
         };
     } catch (e) {
         return {
