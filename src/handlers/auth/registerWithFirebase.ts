@@ -6,6 +6,10 @@ import { AuthProviderUser, AuthProviderType } from '../../entity/AuthProviderUse
 import { generateUserToken } from '../../utils/auth/token';
 
 const index: Handler<APIGatewayEvent> = async (event, context) => {
+    const connection = await getConnection();
+    const userRepository = connection.getRepository(User);
+    const authProviderUserRepository = connection.getRepository(AuthProviderUser);
+
     try {
         const parsedBody = JSON.parse(event.body || 'null');
 
@@ -29,9 +33,21 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
             };
         }
 
-        const connection = await getConnection();
-        const userRepository = connection.getRepository(User);
-        const authProviderUserRepository = connection.getRepository(AuthProviderUser);
+        const existingAuthProviderUser = await authProviderUserRepository.findOne({
+            where: {
+                providerType: AuthProviderType.firebase,
+                providerId: verifyResult.token,
+            },
+        });
+
+        if (existingAuthProviderUser != null) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    message: generateUserToken(existingAuthProviderUser.user),
+                }),
+            };
+        }
 
         const authProviderUser = new AuthProviderUser();
         authProviderUser.providerType = AuthProviderType.firebase;
