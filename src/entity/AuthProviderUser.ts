@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { User } from './User';
 
 export enum AuthProviderType {
@@ -9,6 +9,7 @@ export enum AuthProviderType {
 }
 
 @Entity()
+@Unique(['providerType', 'providerId'])
 export class AuthProviderUser {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
@@ -22,7 +23,7 @@ export class AuthProviderUser {
     @Column()
     providerId!: string;
 
-    @ManyToOne(type => User, { cascade: true })
+    @ManyToOne(type => User, { cascade: true, eager: true })
     @JoinColumn({ name: 'fk_user_id' })
     user!: User;
 }
