@@ -46,6 +46,12 @@ functions:
             - http:
                   path: register/firebase
                   method: post
+    createBook:
+        handler: src/server.createBook
+        events:
+            - http:
+                  path: book/create
+                  method: post
 
 iamRoleStatements:
     - Effect: Allow
