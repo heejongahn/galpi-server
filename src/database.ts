@@ -1,8 +1,10 @@
 import * as process from 'process';
 import { createConnection, Connection } from 'typeorm';
 
-import { User } from './entity/User';
 import { AuthProviderUser } from './entity/AuthProviderUser';
+import { Book } from './entity/Book';
+import { Review } from './entity/Review';
+import { User } from './entity/User';
 
 let connection: Connection | null;
 
@@ -17,7 +19,7 @@ export async function getConnection() {
             username: TYPEORM_USERNAME,
             password: TYPEORM_PASSWORD,
             database: TYPEORM_DATABASE,
-            entities: [User, AuthProviderUser],
+            entities: [AuthProviderUser, Book, Review, User],
             synchronize: process.env.STAGE === 'dev',
             logging: false,
         });
