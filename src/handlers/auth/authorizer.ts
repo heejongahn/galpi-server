@@ -2,10 +2,12 @@ import { CustomAuthorizerHandler } from 'aws-lambda';
 
 import { decodeUserToken } from '../../utils/auth/token';
 
+const principalId = 'galpi-user';
+
 const index: CustomAuthorizerHandler = async (event, context) => {
     if (event.authorizationToken == null) {
         return {
-            principalId: 'user',
+            principalId,
             policyDocument: {
                 Version: '2012-10-17',
                 Statement: [
@@ -24,7 +26,7 @@ const index: CustomAuthorizerHandler = async (event, context) => {
     const allow = type === 'Bearer' && decoded.success;
 
     return {
-        principalId: 'user',
+        principalId,
         policyDocument: {
             Version: '2012-10-17',
             Statement: [
