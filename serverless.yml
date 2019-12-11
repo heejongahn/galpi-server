@@ -52,6 +52,13 @@ functions:
             - http:
                   path: book/create
                   method: post
+    createReview:
+        handler: src/server.createReview
+        events:
+            - http:
+                  path: review/create
+                  method: post
+                  authorizer: authorizer
 
 iamRoleStatements:
     - Effect: Allow
