@@ -6,6 +6,27 @@ import { AuthProviderUser, AuthProviderType } from '../../entity/AuthProviderUse
 import { generateUserToken } from '../../utils/auth/token';
 
 const index: Handler<APIGatewayEvent> = async (event, context) => {
+    const malformedBodyTokenResponse = {
+        statusCode: 400,
+        body: JSON.stringify({
+            message: `registerWithFirebase: body is malformed.`,
+        }),
+    };
+
+    const missingTokenResponse = {
+        statusCode: 400,
+        body: JSON.stringify({
+            message: 'registerWithFirebase: `token` is required.',
+        }),
+    };
+
+    const getSuccessResponse = (user: User) => ({
+        statusCode: 200,
+        body: JSON.stringify({
+            token: generateUserToken(user),
+        }),
+    });
+
     const connection = await getConnection();
     const userRepository = connection.getRepository(User);
     const authProviderUserRepository = connection.getRepository(AuthProviderUser);
@@ -14,12 +35,7 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
         const parsedBody = JSON.parse(event.body || 'null');
 
         if (parsedBody == null || parsedBody.token == null) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    message: 'registerWithFirebase: `token` is required.',
-                }),
-            };
+            return missingTokenResponse;
         }
 
         const verifyResult = await verifyFirebaseIdToken(parsedBody.token);
@@ -41,12 +57,7 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
         });
 
         if (existingAuthProviderUser != null) {
-            return {
-                statusCode: 200,
-                body: JSON.stringify({
-                    message: generateUserToken(existingAuthProviderUser.user),
-                }),
-            };
+            return getSuccessResponse(existingAuthProviderUser.user);
         }
 
         const authProviderUser = new AuthProviderUser();
@@ -60,19 +71,9 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
         user.authProviderUsers = [insertedAuthProviderUser];
         const insertedUser = await userRepository.save(user);
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: generateUserToken(insertedUser),
-            }),
-        };
+        return getSuccessResponse(insertedUser);
     } catch (e) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({
-                message: `registerWithFirebase: body is malformed. ${e.message}`,
-            }),
-        };
+        return malformedBodyTokenResponse;
     }
 };
 
