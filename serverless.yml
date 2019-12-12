@@ -46,6 +46,13 @@ functions:
             - http:
                   path: register/firebase
                   method: post
+                  registerWithFirebase:
+    me:
+        handler: src/server.registerWithFirebase
+        events:
+            - http:
+                  path: me
+                  method: get
     createBook:
         handler: src/server.createBook
         events:
