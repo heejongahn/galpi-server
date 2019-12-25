@@ -1,6 +1,7 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { BookPayload, Book } from '../../entity/Book';
 import { getConnection } from '../../database';
+import { normarlizeISBN } from '../../utils/isbn';
 
 const index: Handler<APIGatewayEvent> = async event => {
     const { body } = event;
@@ -21,9 +22,10 @@ const index: Handler<APIGatewayEvent> = async event => {
             return badPayloadResponse;
         }
 
-        const { isbn, title, authors, publisher, linkUri, imageUri } = parsed.bookPayload;
+        const { isbn, title, authors, author, publisher, linkUri, imageUri } = parsed.bookPayload;
+        const normalizedISBN = normarlizeISBN(isbn.split(' ')[0]);
 
-        const existingBook = await bookRepository.findOne({ where: { isbn } });
+        const existingBook = await bookRepository.findOne({ where: { isbn: normalizedISBN } });
 
         if (existingBook != null) {
             return {
@@ -33,7 +35,7 @@ const index: Handler<APIGatewayEvent> = async event => {
         }
 
         const book = new Book();
-        book.isbn = isbn;
+        book.isbn = normalizedISBN;
         book.title = title;
         if (authors) {
             book.author = authors.join(', ');
