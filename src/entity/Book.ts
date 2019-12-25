@@ -3,7 +3,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export interface BookPayload {
     isbn: string;
     title: string;
-    authors: string[];
+    authors?: string[];
+    author: string;
     publisher: string;
     linkUri: string;
     imageUri: string;

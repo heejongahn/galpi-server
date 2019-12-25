@@ -35,7 +35,11 @@ const index: Handler<APIGatewayEvent> = async event => {
         const book = new Book();
         book.isbn = isbn;
         book.title = title;
-        book.author = authors.join(', ');
+        if (authors) {
+            book.author = authors.join(', ');
+        } else {
+            book.author = author;
+        }
         book.publisher = publisher;
         book.linkUri = linkUri;
         book.imageUri = imageUri;
