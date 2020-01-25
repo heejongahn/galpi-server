@@ -50,7 +50,12 @@ functions:
             - http:
                   path: hello
                   method: get
-                  authorizer: authorizer
+    test:
+        handler: src/server.test
+        events:
+            - http:
+                  path: test
+                  method: get
     registerWithFirebase:
         handler: src/server.registerWithFirebase
         events:

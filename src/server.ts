@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import hello from './handlers/hello';
+import test from './handlers/test';
 
-export { hello };
+export { hello, test };
 export * from './handlers/auth';
 export * from './handlers/book';
 export * from './handlers/review';
