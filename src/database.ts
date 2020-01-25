@@ -8,7 +8,14 @@ import { User } from './entity/User';
 
 let connection: Connection | null;
 
-const { TYPEORM_HOST, TYPEORM_PORT, TYPEORM_USERNAME, TYPEORM_PASSWORD, TYPEORM_DATABASE } = process.env;
+const {
+    TYPEORM_HOST,
+    TYPEORM_PORT,
+    TYPEORM_USERNAME,
+    TYPEORM_PASSWORD,
+    TYPEORM_DATABASE,
+    TYPEORM_SYNCHRONIZE,
+} = process.env;
 
 export async function getConnection() {
     if (connection == null) {
@@ -20,7 +27,7 @@ export async function getConnection() {
             password: TYPEORM_PASSWORD,
             database: TYPEORM_DATABASE,
             entities: [AuthProviderUser, Book, Review, User],
-            synchronize: process.env.STAGE === 'dev',
+            synchronize: TYPEORM_SYNCHRONIZE === 'true',
             logging: false,
         });
     }
