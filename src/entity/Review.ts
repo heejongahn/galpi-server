@@ -55,7 +55,7 @@ export class Review {
     @UpdateDateColumn()
     lastModifiedAt!: Date;
 
-    @Column({ type: 'boolean' })
+    @Column({ type: 'boolean', default: false })
     isPublic!: boolean;
 
     @ManyToOne(type => User, { cascade: true, eager: true })
