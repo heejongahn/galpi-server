@@ -30,9 +30,9 @@ export class Book {
     @Column()
     publisher!: string;
 
-    @Column()
+    @Column({ length: 500 })
     linkUri!: string;
 
-    @Column()
+    @Column({ length: 500 })
     imageUri!: string;
 }
