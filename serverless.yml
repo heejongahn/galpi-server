@@ -30,8 +30,8 @@ plugins:
     - serverless-dotenv-plugin
 
 functions:
-    authorizer:
-        handler: src/server.authorizer
+    protectedAuthorizer:
+        handler: src/server.protectedAuthorizer
     alwaysAllowAuthorizer:
         handler: src/server.alwaysAllowAuthorizer
     hello:
@@ -58,7 +58,7 @@ functions:
             - http:
                   path: me
                   method: get
-                  authorizer: authorizer
+                  authorizer: protectedAuthorizer
     createBook:
         handler: src/server.createBook
         events:
@@ -71,7 +71,7 @@ functions:
             - http:
                   path: review/create
                   method: post
-                  authorizer: authorizer
+                  authorizer: protectedAuthorizer
     listReview:
         handler: src/server.listReview
         events:

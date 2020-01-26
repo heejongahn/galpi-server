@@ -5,7 +5,6 @@ import { decodeUserToken } from '../../utils/auth/token';
 const principalId = 'galpi-user';
 
 const index: CustomAuthorizerHandler = async (event, context) => {
-    console.log('a');
     if (event.authorizationToken == null) {
         return {
             principalId,
@@ -23,10 +22,8 @@ const index: CustomAuthorizerHandler = async (event, context) => {
     }
 
     const [type, token] = event.authorizationToken.split(' ');
-    console.log('decoded end');
     const decoded = decodeUserToken(token);
 
-    console.log('decoded end');
     return {
         principalId,
         policyDocument: {
