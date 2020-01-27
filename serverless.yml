@@ -28,6 +28,15 @@ plugins:
     - serverless-webpack
     - serverless-offline
     - serverless-dotenv-plugin
+    - serverless-domain-manager
+
+custom:
+    customDomain:
+        certificateName: 'galpi.world'
+        domainName: 'api.galpi.world'
+        basePath: ''
+        stage: ${env:STAGE}
+        createRoute53Record: true
 
 functions:
     protectedAuthorizer:
