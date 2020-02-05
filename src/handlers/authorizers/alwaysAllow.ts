@@ -14,7 +14,8 @@ const index: CustomAuthorizerHandler = async (event, context) => {
                     {
                         Action: 'execute-api:Invoke',
                         Effect: 'Allow',
-                        Resource: event.methodArn,
+                        // FIXME: More fine-grained resource control
+                        Resource: '*',
                     },
                 ],
             },

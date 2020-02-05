@@ -23,6 +23,7 @@ const index: CustomAuthorizerHandler = async (event, context) => {
 
     const [type, token] = event.authorizationToken.split(' ');
     const decoded = decodeUserToken(token);
+
     const allow = type === 'Bearer' && decoded.success;
 
     return {
@@ -33,10 +34,8 @@ const index: CustomAuthorizerHandler = async (event, context) => {
                 {
                     Action: 'execute-api:Invoke',
                     Effect: allow ? 'Allow' : 'Deny',
-                    /**
-                     * TODO: 캐싱 정책과 맞물려 들어갈 값 제대로 정하기
-                     */
-                    Resource: event.methodArn,
+                    // FIXME: More fine-grained resource control
+                    Resource: '*',
                 },
             ],
         },
