@@ -33,6 +33,9 @@ const index: Handler<APIGatewayEvent> = async event => {
 
     const reviews = await connection.getRepository(Review).find({
         where: condition,
+        order: {
+            createdAt: 'DESC',
+        },
     });
 
     return {
