@@ -28,7 +28,7 @@ export async function getConnection() {
             database: TYPEORM_DATABASE,
             entities: [AuthProviderUser, Book, Review, User],
             synchronize: TYPEORM_SYNCHRONIZE === 'true',
-            logging: false,
+            logging: true,
         });
     }
 
