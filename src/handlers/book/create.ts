@@ -19,6 +19,8 @@ const index: Handler<APIGatewayEvent> = async event => {
         } | null = JSON.parse(body || 'null');
 
         if (parsed == null || parsed.bookPayload == null) {
+            console.log('createBook failed');
+            console.log(parsed);
             return badPayloadResponse;
         }
 
@@ -48,11 +50,14 @@ const index: Handler<APIGatewayEvent> = async event => {
 
         const insertedBook = await bookRepository.save(book);
 
+        console.log('createBook success');
+        console.log(parsed);
         return {
             statusCode: 200,
             body: JSON.stringify({ bookId: insertedBook.id }),
         };
     } catch (e) {
+        console.log('createBook failed');
         console.log(e);
         return badPayloadResponse;
     }

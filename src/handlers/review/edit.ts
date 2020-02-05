@@ -50,6 +50,8 @@ const index: Handler<APIGatewayEvent> = async event => {
             isPublic,
         } = parsed.reviewPayload;
 
+        console.log(parsed.reviewPayload);
+
         const reviewRepository = connection.getRepository(Review);
 
         const review = await reviewRepository.findOne(id);

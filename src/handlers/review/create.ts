@@ -28,6 +28,7 @@ const index: Handler<APIGatewayEvent> = async event => {
     const user = await getUser(event.requestContext.authorizer.userId);
 
     if (user == null) {
+        console.log('createReview failed');
         return unauthorizedResponse;
     }
 
@@ -38,10 +39,14 @@ const index: Handler<APIGatewayEvent> = async event => {
         } | null = JSON.parse(event.body || 'null');
 
         if (parsed == null || parsed.reviewPayload == null || parsed.bookId == null) {
+            console.log('createReview failed');
+            console.log(parsed);
             return badPayloadResponse;
         }
 
         const { reviewPayload, bookId } = parsed;
+
+        console.log(reviewPayload);
 
         const book = await connection.getRepository(Book).findOne(bookId);
 
@@ -64,11 +69,15 @@ const index: Handler<APIGatewayEvent> = async event => {
 
         const insertedReview = await connection.getRepository(Review).save(review);
 
+        console.log(insertedReview);
+
         return {
             statusCode: 200,
             body: JSON.stringify({ review: insertedReview }),
         };
     } catch (e) {
+        console.log('createReview failed');
+        console.log(e);
         return badPayloadResponse;
     }
 };
