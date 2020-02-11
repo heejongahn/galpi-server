@@ -25,7 +25,7 @@ const index: Handler<APIGatewayEvent> = async event => {
         }
 
         const { isbn, title, authors, author, publisher, linkUri, imageUri } = parsed.bookPayload;
-        const normalizedISBN = normarlizeISBN(isbn.split(' ')[0]);
+        const normalizedISBN = normarlizeISBN(isbn.trim().split(' ')[0]);
 
         const existingBook = await bookRepository.findOne({ where: { isbn: normalizedISBN } });
 
