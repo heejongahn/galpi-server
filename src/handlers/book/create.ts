@@ -2,6 +2,7 @@ import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { BookPayload, Book } from '../../entity/Book';
 import { getConnection } from '../../database';
 import { normarlizeISBN } from '../../utils/isbn';
+import { uploadToS3 } from '../../utils/uploadToS3';
 
 const index: Handler<APIGatewayEvent> = async event => {
     const { body } = event;
@@ -44,9 +45,13 @@ const index: Handler<APIGatewayEvent> = async event => {
         } else {
             book.author = author;
         }
-        book.publisher = publisher;
+        book.publisher = publisher || '출판사 정보 없음';
         book.linkUri = linkUri;
-        book.imageUri = imageUri;
+
+        book.imageUri = await uploadToS3({
+            sourceUrl: imageUri,
+            key: `images/books/${normalizedISBN}`,
+        });
 
         const insertedBook = await bookRepository.save(book);
 
