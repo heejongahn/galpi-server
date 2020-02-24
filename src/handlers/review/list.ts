@@ -18,7 +18,7 @@ const index: Handler<APIGatewayEvent> = async event => {
         return unauthorizedResponse;
     }
 
-    const userId = event.queryStringParameters['userId'];
+    const { userId, skip = '0', take = '20' } = event.queryStringParameters;
 
     const connection = await getConnection();
     const user = await getUser(userId);
@@ -36,6 +36,8 @@ const index: Handler<APIGatewayEvent> = async event => {
         order: {
             createdAt: 'DESC',
         },
+        skip: parseInt(skip, 10),
+        take: parseInt(take, 10),
     });
 
     return {
