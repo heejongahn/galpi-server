@@ -48,10 +48,13 @@ const index: Handler<APIGatewayEvent> = async event => {
         book.publisher = publisher || '출판사 정보 없음';
         book.linkUri = linkUri;
 
-        book.imageUri = await uploadToS3({
-            sourceUrl: imageUri,
-            key: `images/books/${normalizedISBN}`,
-        });
+        book.imageUri =
+            imageUri != null && imageUri.length > 0
+                ? await uploadToS3({
+                      sourceUrl: imageUri,
+                      key: `images/books/${normalizedISBN}`,
+                  })
+                : '';
 
         const insertedBook = await bookRepository.save(book);
 
