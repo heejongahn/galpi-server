@@ -29,5 +29,6 @@ export async function uploadToS3({ sourceUrl, key }: { sourceUrl: string; key: s
         })
         .promise();
 
-    return result.Key;
+    // FIXME: CloudFront
+    return result.Location;
 }
