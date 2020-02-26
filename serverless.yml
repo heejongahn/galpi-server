@@ -23,6 +23,12 @@ provider:
           Action:
               - 'ec2:CreateNetworkInterface'
           Resource: '*'
+        - Effect: Allow
+          Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+              - 's3:PutObjectAcl'
+          Resource: 'arn:aws:s3:::${env:AWS_S3_BUCKET}/*'
 
 plugins:
     - serverless-webpack
