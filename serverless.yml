@@ -101,6 +101,13 @@ functions:
                   path: review/delete
                   method: delete
                   authorizer: protectedAuthorizer
+    getReview:
+        handler: src/server.getReview
+        events:
+            - http:
+                  path: review/get
+                  method: get
+                  authorizer: alwaysAllowAuthorizer
     listReview:
         handler: src/server.listReview
         events:
