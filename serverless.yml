@@ -122,6 +122,20 @@ functions:
                   path: review/list
                   method: get
                   authorizer: alwaysAllowAuthorizer
+    uploadFile:
+        handler: src/server.uploadFile
+        events:
+            - http:
+                  path: file/upload
+                  method: post
+                  authorizer: protectedAuthorizer
+    getSignedUrl:
+        handler: src/server.getSignedUrl
+        events:
+            - http:
+                  path: file/get-signed-url
+                  method: post
+                  authorizer: protectedAuthorizer
 iamRoleStatements:
     - Effect: Allow
       Action:
