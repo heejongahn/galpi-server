@@ -74,6 +74,13 @@ functions:
                   path: me
                   method: get
                   authorizer: protectedAuthorizer
+    editProfile:
+        handler: src/server.editProfile
+        events:
+            - http:
+                  path: profile/edit
+                  method: put
+                  authorizer: protectedAuthorizer
     createBook:
         handler: src/server.createBook
         events:
