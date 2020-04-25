@@ -1,0 +1,77 @@
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+dl,
+dt,
+dd,
+ul,
+p,
+input,
+button,
+menu,
+article,
+main {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-size: 14px;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+  font-size: 16px;
+}
+
+* {
+  font-family: 'Noto Serif KR', 'Lato', 'PingFang SC', 'Microsoft YaHei', serif;
+  font-size: inherit;
+
+  box-sizing: border-box;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+
+  &,
+  &:focus,
+  &:hover,
+  &:visited,
+  &:active {
+    color: inherit;
+  }
+}
+
+input,
+button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+input::-ms-clear,
+input::-ms-reveal {
+  display: none !important;
+}
+
+button {
+  cursor: pointer;
+}
