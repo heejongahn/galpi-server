@@ -10,7 +10,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
     };
 
     const getNoSuchReviewResponse = (id: string) => ({
-        statusCode: 400,
+        statusCode: 404,
         body: `review/list: No review with id ${id} exists.`,
     });
 
@@ -27,12 +27,14 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     const condition = requestUserId == null ? { isPublic: true } : [{ isPublic: true }, { user: requestUser }];
 
-    const review = await connection.getRepository(Review).findOne({
+    const review = await connection.getRepository(Review).findOne(reviewId, {
         where: condition,
         order: {
             createdAt: 'DESC',
         },
     });
+
+    console.log(review);
 
     if (review == null) {
         return getNoSuchReviewResponse(reviewId);
