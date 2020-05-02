@@ -1,11 +1,13 @@
 import { CustomAuthorizerHandler } from 'aws-lambda';
 
-import { decodeUserToken } from '../../utils/auth/token';
+import { identifyUserfromAuthorizationToken } from '../../utils/auth/identify';
 
 const principalId = 'galpi-user';
 
-const index: CustomAuthorizerHandler = async (event, context) => {
-    if (event.authorizationToken == null) {
+const index: CustomAuthorizerHandler = async (event) => {
+    const validateUserFromAuthorizationTokenResult = identifyUserfromAuthorizationToken(event.authorizationToken);
+
+    if (!validateUserFromAuthorizationTokenResult.identified) {
         return {
             principalId,
             policyDocument: {
@@ -21,11 +23,6 @@ const index: CustomAuthorizerHandler = async (event, context) => {
         };
     }
 
-    const [type, token] = event.authorizationToken.split(' ');
-    const decoded = decodeUserToken(token);
-
-    const allow = type === 'Bearer' && decoded.success;
-
     return {
         principalId,
         policyDocument: {
@@ -33,17 +30,15 @@ const index: CustomAuthorizerHandler = async (event, context) => {
             Statement: [
                 {
                     Action: 'execute-api:Invoke',
-                    Effect: allow ? 'Allow' : 'Deny',
+                    Effect: 'Allow',
                     // FIXME: More fine-grained resource control
                     Resource: '*',
                 },
             ],
         },
-        context: decoded.success
-            ? {
-                  userId: decoded.payload.userId,
-              }
-            : {},
+        context: {
+            userId: validateUserFromAuthorizationTokenResult.userId,
+        },
     };
 };
 

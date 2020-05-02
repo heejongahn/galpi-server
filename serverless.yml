@@ -47,8 +47,6 @@ custom:
 functions:
     protectedAuthorizer:
         handler: src/server.protectedAuthorizer
-    alwaysAllowAuthorizer:
-        handler: src/server.alwaysAllowAuthorizer
     hello:
         handler: src/server.hello
         events:
@@ -114,14 +112,12 @@ functions:
             - http:
                   path: review/get
                   method: get
-                  authorizer: alwaysAllowAuthorizer
     listReview:
         handler: src/server.listReview
         events:
             - http:
                   path: review/list
                   method: get
-                  authorizer: alwaysAllowAuthorizer
     uploadFile:
         handler: src/server.uploadFile
         events:

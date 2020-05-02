@@ -2,8 +2,9 @@ import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
+import { identifyUserFromAuthorizationHeader } from '../../utils/auth/identify';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
         body: `review/list: Unauthorized`,
@@ -23,11 +24,15 @@ const index: Handler<APIGatewayEvent> = async event => {
     const connection = await getConnection();
     const user = await getUser(userId);
 
-    const requestUserId = event.requestContext.authorizer != null ? event.requestContext.authorizer.userId : null;
+    const validateUserResult = identifyUserFromAuthorizationHeader(event.headers);
+    console.log(validateUserResult);
+    const requestUserId = validateUserResult.identified ? validateUserResult.userId : null;
 
     if (user == null) {
         return getNoSuchUserResponse(userId);
     }
+
+    console.log(requestUserId, userId);
 
     const condition = requestUserId === userId ? { user } : { user, isPublic: true };
 
