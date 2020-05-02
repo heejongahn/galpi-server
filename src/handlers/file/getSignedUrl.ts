@@ -50,14 +50,14 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         const objectUrl = `https://s3.${AWS_SERVERLESS_REGION!}.amazonaws.com/${AWS_S3_BUCKET}/${s3Key}`;
 
         return {
-            status: 200,
+            statusCode: 200,
             body: JSON.stringify({
                 signedUrl,
                 objectUrl,
             }),
         };
     } catch (e) {
-        console.warn(e);
+        console.log(e);
         return {
             statusCode: 500,
         };
