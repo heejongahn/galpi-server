@@ -2,7 +2,7 @@ import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { S3 } from 'aws-sdk';
 import { getUser } from '../../getUser';
 
-const { AWS_S3_BUCKET, AWS_SERVERLESS_REGION } = process.env;
+const { AWS_S3_BUCKET, AWS_SERVERLESS_REGION, AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN } = process.env;
 
 const s3 = new S3();
 
@@ -47,7 +47,9 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         };
 
         const signedUrl = await s3.getSignedUrlPromise('putObject', s3Params);
-        const objectUrl = `https://s3.${AWS_SERVERLESS_REGION!}.amazonaws.com/${AWS_S3_BUCKET}/${s3Key}`;
+        const objectUrl = AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN
+            ? `${AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN}/${s3Key}`
+            : `https://s3.${AWS_SERVERLESS_REGION!}.amazonaws.com/${AWS_S3_BUCKET}/${s3Key}`;
 
         return {
             statusCode: 200,

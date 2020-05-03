@@ -2,7 +2,7 @@ import axios from 'axios';
 import { S3 } from 'aws-sdk';
 
 export async function uploadToS3({ sourceUrl, key }: { sourceUrl: string; key: string }) {
-    const { AWS_S3_BUCKET: Bucket } = process.env;
+    const { AWS_S3_BUCKET: Bucket, AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN } = process.env;
 
     if (Bucket == null) {
         throw new Error(`uploadToS3: process.env.AWS_S3_BUCKET is undefined.`);
@@ -15,9 +15,10 @@ export async function uploadToS3({ sourceUrl, key }: { sourceUrl: string; key: s
 
     const extension = contentType.split('/')[1];
 
+    const Key = `${key}.${extension}`;
     const s3Params = {
         Bucket,
-        Key: `${key}.${extension}`,
+        Key,
         ContentType: contentType,
         ACL: 'public-read',
     };
@@ -29,6 +30,9 @@ export async function uploadToS3({ sourceUrl, key }: { sourceUrl: string; key: s
         })
         .promise();
 
-    // FIXME: CloudFront
-    return result.Location;
+    const location = AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN
+        ? `${AWS_S3_CLOUDFRONT_DISTRIBUTION_DOMAIN}/${Key}`
+        : result.Location;
+
+    return location;
 }
