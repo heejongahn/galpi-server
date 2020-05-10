@@ -112,6 +112,7 @@ functions:
             - http:
                   path: review/get
                   method: get
+                  cors: true
     listReview:
         handler: src/server.listReview
         events:
