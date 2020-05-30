@@ -72,6 +72,13 @@ functions:
                   path: me
                   method: get
                   authorizer: protectedAuthorizer
+    getProfile:
+        handler: src/server.getProfile
+        events:
+            - http:
+                  path: profile/
+                  method: get
+                  cors: true
     editProfile:
         handler: src/server.editProfile
         events:
