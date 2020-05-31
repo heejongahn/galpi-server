@@ -59,6 +59,12 @@ functions:
             - http:
                   path: test
                   method: get
+    renewToken:
+        handler: src/server.renew
+        events:
+            - http:
+                  path: auth/renew
+                  method: post
     registerWithFirebase:
         handler: src/server.registerWithFirebase
         events:

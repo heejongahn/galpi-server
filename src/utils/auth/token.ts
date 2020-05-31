@@ -7,7 +7,14 @@ interface TokenPayload {
     userId: User['id'];
 }
 
-export function generateUserToken(user: User): string | null {
+export function generateUserTokenPair(user: User) {
+    return {
+        token: generateUserToken(user),
+        refreshToken: generateUserToken(user, { expiresIn: '28d' }),
+    };
+}
+
+export function generateUserToken(user: User, signOption?: SignOptions): string | null {
     if (JWT_SECRET_KEY == null) {
         return null;
     }
@@ -19,6 +26,7 @@ export function generateUserToken(user: User): string | null {
     const option: SignOptions = {
         expiresIn: '7d',
         algorithm: JWT_ALGORITHM,
+        ...signOption,
     };
 
     return sign(payload, JWT_SECRET_KEY, option);

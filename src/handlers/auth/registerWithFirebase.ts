@@ -3,7 +3,7 @@ import { verifyFirebaseIdToken } from '../../utils/auth/firebase';
 import { getConnection } from '../../database';
 import { User } from '../../entity/User';
 import { AuthProviderUser, AuthProviderType } from '../../entity/AuthProviderUser';
-import { generateUserToken } from '../../utils/auth/token';
+import { generateUserTokenPair } from '../../utils/auth/token';
 
 const index: Handler<APIGatewayEvent> = async (event, context) => {
     const malformedBodyTokenResponse = {
@@ -22,9 +22,7 @@ const index: Handler<APIGatewayEvent> = async (event, context) => {
 
     const getSuccessResponse = (user: User) => ({
         statusCode: 200,
-        body: JSON.stringify({
-            token: generateUserToken(user),
-        }),
+        body: JSON.stringify(generateUserTokenPair(user)),
     });
 
     const connection = await getConnection();
