@@ -16,6 +16,9 @@ export class User {
     displayName?: string;
 
     @Column({ nullable: true })
+    introduction?: string;
+
+    @Column({ nullable: true })
     profileImageUrl?: string;
 
     @OneToMany((type) => AuthProviderUser, (AuthProviderUser) => AuthProviderUser.user)

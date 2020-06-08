@@ -35,10 +35,11 @@ const index: Handler<APIGatewayEvent> = async (event) => {
     }
 
     try {
-        const { displayName, profileImageUrl } = JSON.parse(body);
+        const { displayName, introduction = '', profileImageUrl } = JSON.parse(body);
 
         user.displayName = displayName;
         user.profileImageUrl = profileImageUrl;
+        user.introduction = introduction;
 
         const connection = await getConnection();
         const updated = await connection.getRepository(User).save(user);
