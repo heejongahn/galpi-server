@@ -2,8 +2,9 @@ import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
+import { removeReview } from '../../database/removeReview';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
         body: `review/delete: Unauthorized`,
@@ -49,7 +50,7 @@ const index: Handler<APIGatewayEvent> = async event => {
             return unauthorizedResponse;
         }
 
-        await reviewRepository.remove([review]);
+        await removeReview({ review });
 
         return {
             statusCode: 200,

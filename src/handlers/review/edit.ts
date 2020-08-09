@@ -2,8 +2,11 @@ import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { ReviewPayload, Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
+import parseReviewAndRevisionPayload from '../../utils/parseReviewAndRevisionPayload';
+import { updateReview } from '../../database/updateReview';
+import createActiveReviewResponse from '../../utils/createActiveReviewResponse';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
         body: `review/edit: Unauthorized`,
@@ -36,19 +39,10 @@ const index: Handler<APIGatewayEvent> = async event => {
         } | null = JSON.parse(event.body || 'null');
 
         if (parsed == null || parsed.reviewPayload == null) {
+            console.log('no');
             return badPayloadResponse;
         }
-
-        const {
-            id,
-            stars,
-            title,
-            body,
-            readingStatus,
-            readingStartedAt,
-            readingFinishedAt,
-            isPublic,
-        } = parsed.reviewPayload;
+        const { id } = parsed.reviewPayload;
 
         console.log(parsed.reviewPayload);
 
@@ -64,21 +58,23 @@ const index: Handler<APIGatewayEvent> = async event => {
             return unauthorizedResponse;
         }
 
-        review.stars = stars;
-        review.title = title;
-        review.body = body;
-        review.readingStatus = readingStatus;
-        review.readingStartedAt = readingStartedAt ? new Date(readingStartedAt) : undefined;
-        review.readingFinishedAt = readingFinishedAt ? new Date(readingFinishedAt) : undefined;
-        review.isPublic = isPublic;
+        const { review: updatingReview, revision } = parseReviewAndRevisionPayload({
+            payload: parsed.reviewPayload,
+            user,
+            book: review.book,
+        });
 
-        const updatedReview = await reviewRepository.save(review);
+        const updatedReview = await updateReview({
+            review: { ...updatingReview, id: parsed.reviewPayload.id },
+            revision,
+        });
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ review: updatedReview }),
+            body: JSON.stringify({ review: createActiveReviewResponse({ review: updatedReview }) }),
         };
     } catch (e) {
+        console.log(e);
         return badPayloadResponse;
     }
 };

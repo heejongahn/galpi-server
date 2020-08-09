@@ -3,6 +3,7 @@ import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { identifyUserFromAuthorizationHeader } from '../../utils/auth/identify';
+import createActiveReviewResponse from '../../utils/createActiveReviewResponse';
 
 const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
@@ -48,7 +49,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': true,
         },
-        body: JSON.stringify({ review }),
+        body: JSON.stringify({ review: createActiveReviewResponse({ review }) }),
     };
 };
 

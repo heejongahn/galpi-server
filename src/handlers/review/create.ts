@@ -3,8 +3,11 @@ import { ReviewPayload, Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { Book } from '../../entity/Book';
+import createActiveReviewResponse from '../../utils/createActiveReviewResponse';
+import parseReviewAndRevisionPayload from '../../utils/parseReviewAndRevisionPayload';
+import { insertReview } from '../../database/insertReview';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
         body: `review/create: Unauthorized`,
@@ -54,26 +57,16 @@ const index: Handler<APIGatewayEvent> = async event => {
             return getNoSuchBookResponse(bookId);
         }
 
-        const { stars, title, body, readingStatus, readingStartedAt, readingFinishedAt, isPublic } = reviewPayload;
-
-        const review = new Review();
-        review.stars = stars;
-        review.title = title;
-        review.body = body;
-        review.readingStatus = readingStatus;
-        review.readingStartedAt = readingStartedAt ? new Date(readingStartedAt) : undefined;
-        review.readingFinishedAt = readingFinishedAt ? new Date(readingFinishedAt) : undefined;
-        review.isPublic = isPublic;
-        review.user = user;
-        review.book = book;
-
-        const insertedReview = await connection.getRepository(Review).save(review);
-
-        console.log(insertedReview);
+        const { review, revision } = parseReviewAndRevisionPayload({ payload: reviewPayload, user, book });
+        const insertedReview = await insertReview({ review, revision });
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ review: insertedReview }),
+            body: JSON.stringify({
+                review: createActiveReviewResponse({
+                    review: insertedReview,
+                }),
+            }),
         };
     } catch (e) {
         console.log('createReview failed');
