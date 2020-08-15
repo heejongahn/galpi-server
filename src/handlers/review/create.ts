@@ -1,5 +1,5 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { ReviewPayload, Review } from '../../entity/Review';
+import { LegacyReviewPayload } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { Book } from '../../entity/Book';
@@ -37,7 +37,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     try {
         const parsed: {
-            reviewPayload?: ReviewPayload;
+            reviewPayload?: LegacyReviewPayload;
             bookId?: string;
         } | null = JSON.parse(event.body || 'null');
 

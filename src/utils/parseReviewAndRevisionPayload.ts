@@ -1,10 +1,10 @@
-import { ReviewPayload, Review } from '../entity/Review';
+import { LegacyReviewPayload, Review } from '../entity/Review';
 import { Revision } from '../entity/Revision';
 import { User } from '../entity/User';
 import { Book } from '../entity/Book';
 
 interface Props {
-    payload: ReviewPayload;
+    payload: LegacyReviewPayload;
     user: User;
     book: Book;
 }

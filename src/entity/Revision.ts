@@ -20,16 +20,25 @@ export interface RevisionPayload {
     title: string;
     body: string;
     readingStatus: ReadingStatus;
-    readingStartedAt?: number;
-    readingFinishedAt?: number;
-    isPublic: boolean;
 }
 
 @Entity()
 export class Revision {
+    /**
+     * Generated
+     */
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    lastModifiedAt!: Date;
+
+    /**
+     * Payload
+     */
     @Column({ type: 'int' })
     stars!: number;
 
@@ -42,15 +51,9 @@ export class Revision {
     @Column({ type: 'enum', enum: ReadingStatus })
     readingStatus!: string;
 
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    @UpdateDateColumn()
-    lastModifiedAt!: Date;
-
-    @Column({ type: 'boolean', default: false })
-    isPublic!: boolean;
-
+    /**
+     * FK
+     */
     @ManyToOne((type) => Review, (review) => review.revisions, { cascade: false, eager: false, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'fk_review_id' })
     review!: Review;

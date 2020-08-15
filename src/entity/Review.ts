@@ -19,7 +19,7 @@ enum ReadingStatus {
     finishedReading = 'finishedReading',
 }
 
-export interface ReviewPayload {
+export interface LegacyReviewPayload {
     stars: number;
     title: string;
     body: string;
@@ -29,8 +29,17 @@ export interface ReviewPayload {
     isPublic: boolean;
 }
 
+export interface ReviewPayload {
+    isPublic: boolean;
+    readingStartedAt?: number;
+    readingFinishedAt?: number;
+}
+
 @Entity()
 export class Review {
+    /**
+     * Generated
+     */
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
@@ -40,6 +49,9 @@ export class Review {
     @UpdateDateColumn()
     lastModifiedAt!: Date;
 
+    /**
+     * Payload
+     */
     @Column({ type: 'boolean', default: false })
     isPublic!: boolean;
 
@@ -49,6 +61,9 @@ export class Review {
     @Column({ type: 'datetime', nullable: true })
     readingFinishedAt?: Date;
 
+    /**
+     * FK
+     */
     @ManyToOne((type) => User, { cascade: true, eager: true })
     @JoinColumn({ name: 'fk_user_id' })
     user!: User;
