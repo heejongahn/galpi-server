@@ -1,4 +1,5 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
+import { IsNull, Not } from 'typeorm';
 import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
@@ -20,7 +21,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         return unauthorizedResponse;
     }
 
-    const { userId, skip = '0', take = '20' } = event.queryStringParameters;
+    const { userId, skip = '0', take = '20', active = 'true' } = event.queryStringParameters;
 
     const connection = await getConnection();
     const user = await getUser(userId);
@@ -33,9 +34,12 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         return getNoSuchUserResponse(userId);
     }
 
-    console.log(requestUserId, userId);
+    const commonCondition = {
+        user,
+        activeRevision: active === 'true' ? Not(IsNull()) : IsNull(),
+    };
 
-    const condition = requestUserId === userId ? { user } : { user, isPublic: true };
+    const condition = requestUserId === userId ? commonCondition : { ...commonCondition, isPublic: true };
 
     const reviews = await connection.getRepository(Review).find({
         where: condition,
