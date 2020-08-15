@@ -1,10 +1,8 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { BookPayload, Book } from '../../entity/Book';
-import { getConnection } from '../../database';
-import { normarlizeISBN } from '../../utils/isbn';
-import { uploadToS3 } from '../../utils/uploadToS3';
+import { BookPayload } from '../../entity/Book';
+import { selectOrInsertBook } from '../../database/selectOrInsertBook';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const { body } = event;
     const badPayloadResponse = {
         statusCode: 400,
@@ -12,9 +10,6 @@ const index: Handler<APIGatewayEvent> = async event => {
     };
 
     try {
-        const connection = await getConnection();
-        const bookRepository = connection.getRepository(Book);
-
         const parsed: {
             bookPayload?: BookPayload;
         } | null = JSON.parse(body || 'null');
@@ -25,44 +20,13 @@ const index: Handler<APIGatewayEvent> = async event => {
             return badPayloadResponse;
         }
 
-        const { isbn, title, authors, author, publisher, linkUri, imageUri } = parsed.bookPayload;
-        const normalizedISBN = normarlizeISBN(isbn.trim().split(' ')[0]);
-
-        const existingBook = await bookRepository.findOne({ where: { isbn: normalizedISBN } });
-
-        if (existingBook != null) {
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ bookId: existingBook.id }),
-            };
-        }
-
-        const book = new Book();
-        book.isbn = normalizedISBN;
-        book.title = title;
-        if (authors) {
-            book.author = authors.join(', ');
-        } else {
-            book.author = author;
-        }
-        book.publisher = publisher || '출판사 정보 없음';
-        book.linkUri = linkUri;
-
-        book.imageUri =
-            imageUri != null && imageUri.length > 0
-                ? await uploadToS3({
-                      sourceUrl: imageUri,
-                      key: `images/books/${normalizedISBN}`,
-                  })
-                : '';
-
-        const insertedBook = await bookRepository.save(book);
+        const book = await selectOrInsertBook(parsed.bookPayload);
 
         console.log('createBook success');
         console.log(parsed);
         return {
             statusCode: 200,
-            body: JSON.stringify({ bookId: insertedBook.id }),
+            body: JSON.stringify({ bookId: book.id }),
         };
     } catch (e) {
         console.log('createBook failed');
