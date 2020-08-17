@@ -3,7 +3,7 @@ import { LegacyReviewPayload } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { Book } from '../../entity/Book';
-import createActiveReviewResponse from '../../utils/createActiveReviewResponse';
+import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
 import parseReviewAndRevisionPayload from '../../utils/parseReviewAndRevisionPayload';
 import { insertReview } from '../../database/insertReview';
 
@@ -63,7 +63,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         return {
             statusCode: 200,
             body: JSON.stringify({
-                review: createActiveReviewResponse({
+                review: createMergedReviewAndRevision({
                     review: insertedReview,
                 }),
             }),

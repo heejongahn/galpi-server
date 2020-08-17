@@ -4,7 +4,7 @@ import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { identifyUserFromAuthorizationHeader } from '../../utils/auth/identify';
-import createActiveReviewResponse from '../../utils/createActiveReviewResponse';
+import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
 
 const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
@@ -52,7 +52,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     return {
         statusCode: 200,
-        body: JSON.stringify({ reviews: reviews.map((r) => createActiveReviewResponse({ review: r })) }),
+        body: JSON.stringify({ reviews: reviews.map((r) => createMergedReviewAndRevision({ review: r })) }),
     };
 };
 
