@@ -1,5 +1,4 @@
 import { Review } from '../entity/Review';
-import { Revision } from '../entity/Revision';
 import { getConnection } from '.';
 
 interface Props {
