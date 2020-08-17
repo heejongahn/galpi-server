@@ -1,7 +1,7 @@
 import { LegacyReviewPayload, Review } from '../entity/Review';
-import { Revision } from '../entity/Revision';
 import { User } from '../entity/User';
 import { Book } from '../entity/Book';
+import parseRevision from './parseRevision';
 
 interface Props {
     payload: LegacyReviewPayload;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function parseReviewAndRevisionPayload({ payload, user, book }: Props) {
-    const { stars, title, body, readingStatus, readingStartedAt, readingFinishedAt, isPublic } = payload;
+    const { readingStartedAt, readingFinishedAt, isPublic } = payload;
 
     const review = new Review();
 
@@ -20,11 +20,7 @@ export default function parseReviewAndRevisionPayload({ payload, user, book }: P
     review.user = user;
     review.book = book;
 
-    const revision = new Revision();
-    revision.stars = stars;
-    revision.title = title;
-    revision.body = body;
-    revision.readingStatus = readingStatus;
+    const { revision } = parseRevision({ payload });
     review.activeRevision = revision;
 
     return {
