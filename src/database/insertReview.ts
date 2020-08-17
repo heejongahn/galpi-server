@@ -4,7 +4,7 @@ import { getConnection } from '.';
 
 interface Props {
     review: Review;
-    revision: Revision;
+    revision?: Revision;
 }
 
 export async function insertReview({ review, revision }: Props) {
@@ -16,9 +16,11 @@ export async function insertReview({ review, revision }: Props) {
 
         const insertedReview = await reviewRepository.save(review);
 
-        revision.review = insertedReview;
+        if (revision == null) {
+            return insertedReview;
+        }
 
-        const insertedRevision = await revisionRepository.save(revision);
+        const insertedRevision = await revisionRepository.save({ ...revision, review: insertedReview });
 
         await reviewRepository.update(insertedReview.id, {
             activeRevision: insertedRevision,
