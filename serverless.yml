@@ -112,6 +112,13 @@ functions:
                   path: review/create
                   method: post
                   authorizer: protectedAuthorizer
+    createRevision:
+        handler: src/server.createRevision
+        events:
+            - http:
+                  path: review/create-revision
+                  method: post
+                  authorizer: protectedAuthorizer
     editReview:
         handler: src/server.editReview
         events:
