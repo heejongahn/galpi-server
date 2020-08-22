@@ -6,6 +6,29 @@ import { getConnection } from '../../database';
 import { identifyUserFromAuthorizationHeader } from '../../utils/auth/identify';
 import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
 
+enum ListType {
+    All = 'all',
+    Unread = 'unread',
+    Read = 'read',
+}
+
+function getActiveRevisionCondition(listType: string) {
+    switch (listType) {
+        case ListType.All: {
+            return {};
+        }
+        case ListType.Unread: {
+            return { activeReision: IsNull() };
+        }
+        case ListType.All: {
+            return { activeRevision: Not(IsNull()) };
+        }
+        default: {
+            return {};
+        }
+    }
+}
+
 const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
@@ -21,7 +44,9 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         return unauthorizedResponse;
     }
 
-    const { userId, skip = '0', take = '20', active = 'true' } = event.queryStringParameters;
+    const { userId, skip = '0', take = '20', listType = ListType.All } = event.queryStringParameters;
+
+    console.log(event.queryStringParameters);
 
     const connection = await getConnection();
     const user = await getUser(userId);
@@ -36,7 +61,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     const commonCondition = {
         user,
-        activeRevision: active === 'true' ? Not(IsNull()) : IsNull(),
+        ...getActiveRevisionCondition(listType),
     };
 
     const condition = requestUserId === userId ? commonCondition : { ...commonCondition, isPublic: true };
