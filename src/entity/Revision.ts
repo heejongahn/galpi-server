@@ -64,7 +64,7 @@ export function getDefaultRevision(): Revision {
     r.stars = 3;
     r.title = '';
     r.body = '';
-    r.readingStatus = ReadingStatus.finishedReading;
+    r.readingStatus = ReadingStatus.hasntStarted;
 
     return r;
 }
