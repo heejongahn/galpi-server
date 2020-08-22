@@ -5,7 +5,7 @@
     "main": "handler.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "sls offline --useChildProcess",
+        "dev": "sls offline --useChildProcesses",
         "dev:sync": "yarn ts-node -r dotenv/config node_modules/typeorm/cli.js schema:sync dotenv_config_path=.env.development",
         "deploy": "NODE_ENV=production sls deploy"
     },
