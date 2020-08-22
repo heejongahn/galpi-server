@@ -26,7 +26,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         console.log(parsed);
         return {
             statusCode: 200,
-            body: JSON.stringify({ bookId: book.id }),
+            body: JSON.stringify({ book, bookId: book.id }),
         };
     } catch (e) {
         console.log('createBook failed');
