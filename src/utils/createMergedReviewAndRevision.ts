@@ -6,11 +6,20 @@ interface Props {
 }
 
 export default function createMergedReviewAndRevision({ review }: Props) {
-    const { activeRevision, lastModifiedAt, createdAt, ...reviewRest } = review;
-    const { review: _, ...revisionRest } = activeRevision || getDefaultRevision();
+    const { activeRevision, ...reviewRest } = review;
+    const { review: _, ...activeRevisionWithoutReview } = activeRevision || {};
+
+    /**
+     * Simulate review before the concept of revision introduced for old clients
+     */
+    const backworkdCompatibleReview = {
+        ...reviewRest,
+        ...getDefaultRevision(),
+        ...activeRevisionWithoutReview,
+    };
 
     return {
-        ...revisionRest,
-        ...reviewRest,
+        ...backworkdCompatibleReview,
+        activeRevision: activeRevision != null ? activeRevisionWithoutReview : undefined,
     };
 }
