@@ -4,6 +4,7 @@ import { Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { insertReview } from '../../database/insertReview';
 import { selectOrInsertBook } from '../../database/selectOrInsertBook';
+import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
 
 const index: Handler<APIGatewayEvent> = async (event) => {
     const { body } = event;
@@ -49,7 +50,9 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         return {
             statusCode: 200,
             body: JSON.stringify({
-                review: insertedReview,
+                review: createMergedReviewAndRevision({
+                    review: insertedReview,
+                }),
             }),
         };
     } catch (e) {

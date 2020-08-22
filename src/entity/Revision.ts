@@ -58,3 +58,13 @@ export class Revision {
     @JoinColumn({ name: 'fk_review_id' })
     review!: Review;
 }
+
+export function getDefaultRevision(): Revision {
+    const r = new Revision();
+    r.stars = 3;
+    r.title = '';
+    r.body = '';
+    r.readingStatus = ReadingStatus.finishedReading;
+
+    return r;
+}
