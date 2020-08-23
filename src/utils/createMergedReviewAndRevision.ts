@@ -7,7 +7,7 @@ interface Props {
 
 export default function createMergedReviewAndRevision({ review }: Props) {
     const { activeRevision, ...reviewRest } = review;
-    const { review: _, ...activeRevisionWithoutReview } = activeRevision || {};
+    const { review: _, id: __, ...activeRevisionWithoutReview } = activeRevision || {};
 
     /**
      * Simulate review before the concept of revision introduced for old clients

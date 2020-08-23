@@ -1,13 +1,11 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { ReviewPayload } from '../../entity/Review';
+import { LegacyReviewPayload } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
 import { Book } from '../../entity/Book';
 import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
+import parseReviewAndRevisionPayload from '../../utils/parseReviewAndRevisionPayload';
 import { insertReview } from '../../database/insertReview';
-import { RevisionPayload } from '../../entity/Revision';
-import parseRevision from '../../utils/parseRevision';
-import parseReview from '../../utils/parseReview';
 
 const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
@@ -39,18 +37,17 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     try {
         const parsed: {
-            reviewPayload?: ReviewPayload;
-            revisionPayload?: RevisionPayload;
+            reviewPayload?: LegacyReviewPayload;
             bookId?: string;
         } | null = JSON.parse(event.body || 'null');
 
-        if (parsed == null || parsed.reviewPayload == null || parsed.revisionPayload == null || parsed.bookId == null) {
+        if (parsed == null || parsed.reviewPayload == null || parsed.bookId == null) {
             console.log('createReview failed');
             console.log(parsed);
             return badPayloadResponse;
         }
 
-        const { reviewPayload, revisionPayload, bookId } = parsed;
+        const { reviewPayload, bookId } = parsed;
 
         console.log(reviewPayload);
 
@@ -60,14 +57,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
             return getNoSuchBookResponse(bookId);
         }
 
-        const { revision } = parseRevision({ payload: revisionPayload });
-        const { review } = parseReview({
-            payload: reviewPayload,
-            user,
-            book,
-            activeRevision: revision,
-        });
-
+        const { review, revision } = parseReviewAndRevisionPayload({ payload: reviewPayload, user, book });
         const insertedReview = await insertReview({ review, revision });
 
         return {

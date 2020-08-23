@@ -1,3 +1,4 @@
+export { default as legacyCreateReview } from './legacyCreate';
 export { default as createReview } from './create';
 export { default as createUnreadReview } from './createUnread';
 export { default as createRevision } from './createRevision';

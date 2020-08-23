@@ -105,11 +105,18 @@ functions:
                   path: review/create-unread
                   method: post
                   authorizer: protectedAuthorizer
+    legacyCreateReview:
+        handler: src/server.legacyCreateReview
+        events:
+            - http:
+                  path: review/create
+                  method: post
+                  authorizer: protectedAuthorizer
     createReview:
         handler: src/server.createReview
         events:
             - http:
-                  path: review/create
+                  path: review/create-review
                   method: post
                   authorizer: protectedAuthorizer
     createRevision:
