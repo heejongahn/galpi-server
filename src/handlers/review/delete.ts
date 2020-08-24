@@ -40,7 +40,7 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
         const reviewRepository = connection.getRepository(Review);
 
-        const review = await reviewRepository.findOne(reviewId);
+        const review = await reviewRepository.findOne(reviewId, { relations: ['revisions'] });
 
         if (review == null) {
             return getNoSuchReviewResponse(reviewId);
