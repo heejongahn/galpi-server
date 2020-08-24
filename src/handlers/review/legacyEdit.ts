@@ -1,7 +1,9 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { ReviewPayload, Review } from '../../entity/Review';
+import { LegacyReviewPayload, Review } from '../../entity/Review';
 import { getUser } from '../../getUser';
 import { getConnection } from '../../database';
+import parseReviewAndRevisionPayload from '../../utils/parseReviewAndRevisionPayload';
+import { updateReview } from '../../database/updateReview';
 import createMergedReviewAndRevision from '../../utils/createMergedReviewAndRevision';
 
 const index: Handler<APIGatewayEvent> = async (event) => {
@@ -33,15 +35,14 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
     try {
         const parsed: {
-            reviewPayload?: ReviewPayload & { id: Review['id'] };
+            reviewPayload?: LegacyReviewPayload & { id: Review['id'] };
         } | null = JSON.parse(event.body || 'null');
 
         if (parsed == null || parsed.reviewPayload == null) {
             console.log('no');
             return badPayloadResponse;
         }
-
-        const { id, isPublic, readingStartedAt, readingFinishedAt } = parsed.reviewPayload;
+        const { id } = parsed.reviewPayload;
 
         console.log(parsed.reviewPayload);
 
@@ -57,9 +58,16 @@ const index: Handler<APIGatewayEvent> = async (event) => {
             return unauthorizedResponse;
         }
 
-        Object.assign(review, { isPublic, readingStartedAt, readingFinishedAt });
+        const { review: updatingReview, revision } = parseReviewAndRevisionPayload({
+            payload: parsed.reviewPayload,
+            user,
+            book: review.book,
+        });
 
-        const updatedReview = await reviewRepository.save(review);
+        const updatedReview = await updateReview({
+            review: { ...updatingReview, id: parsed.reviewPayload.id },
+            revision,
+        });
 
         return {
             statusCode: 200,

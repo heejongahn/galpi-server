@@ -126,11 +126,18 @@ functions:
                   path: review/create-revision
                   method: post
                   authorizer: protectedAuthorizer
+    legacyEditReview:
+        handler: src/server.legacyEditReview
+        events:
+            - http:
+                  path: review/edit
+                  method: put
+                  authorizer: protectedAuthorizer
     editReview:
         handler: src/server.editReview
         events:
             - http:
-                  path: review/edit
+                  path: review/edit-review
                   method: put
                   authorizer: protectedAuthorizer
     deleteReview:
