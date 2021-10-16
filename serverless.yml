@@ -65,12 +65,14 @@ functions:
             - http:
                   path: auth/renew
                   method: post
+                  cors: true
     registerWithFirebase:
         handler: src/server.registerWithFirebase
         events:
             - http:
                   path: register/firebase
                   method: post
+                  cors: true
     me:
         handler: src/server.me
         events:
@@ -78,6 +80,7 @@ functions:
                   path: me
                   method: get
                   authorizer: protectedAuthorizer
+                  cors: true
     getProfile:
         handler: src/server.getProfile
         events:
@@ -92,12 +95,14 @@ functions:
                   path: profile/edit
                   method: put
                   authorizer: protectedAuthorizer
+                  cors: true
     createBook:
         handler: src/server.createBook
         events:
             - http:
                   path: book/create
                   method: post
+                  cors: true
     createUnreadReview:
         handler: src/server.createUnreadReview
         events:
@@ -105,6 +110,7 @@ functions:
                   path: review/create-unread
                   method: post
                   authorizer: protectedAuthorizer
+                  cors: true
     legacyCreateReview:
         handler: src/server.legacyCreateReview
         events:
@@ -119,6 +125,7 @@ functions:
                   path: review/create-review
                   method: post
                   authorizer: protectedAuthorizer
+                  cors: true
     createRevision:
         handler: src/server.createRevision
         events:
@@ -126,6 +133,7 @@ functions:
                   path: review/create-revision
                   method: post
                   authorizer: protectedAuthorizer
+                  cors: true
     legacyEditReview:
         handler: src/server.legacyEditReview
         events:
@@ -140,6 +148,7 @@ functions:
                   path: review/edit-review
                   method: put
                   authorizer: protectedAuthorizer
+                  cors: true
     deleteReview:
         handler: src/server.deleteReview
         events:
@@ -147,6 +156,7 @@ functions:
                   path: review/delete
                   method: delete
                   authorizer: protectedAuthorizer
+                  cors: true
     getReview:
         handler: src/server.getReview
         events:
@@ -160,6 +170,7 @@ functions:
             - http:
                   path: review/list
                   method: get
+                  cors: true
     uploadFile:
         handler: src/server.uploadFile
         events:
@@ -167,6 +178,7 @@ functions:
                   path: file/upload
                   method: post
                   authorizer: protectedAuthorizer
+                  cors: true
     getSignedUrl:
         handler: src/server.getSignedUrl
         events:
