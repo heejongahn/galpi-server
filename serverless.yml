@@ -1,6 +1,3 @@
-org: heejongahn
-app: galpi
-
 service: galpi-server
 provider:
     name: aws
