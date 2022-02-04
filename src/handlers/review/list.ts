@@ -20,7 +20,7 @@ function getActiveRevisionCondition(listType: string) {
         case ListType.Unread: {
             return { activeReision: IsNull() };
         }
-        case ListType.All: {
+        case ListType.Read: {
             return { activeRevision: Not(IsNull()) };
         }
         default: {
