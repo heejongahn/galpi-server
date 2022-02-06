@@ -18,7 +18,7 @@ function getActiveRevisionCondition(listType: string) {
             return {};
         }
         case ListType.Unread: {
-            return { activeReision: IsNull() };
+            return { activeRevision: IsNull() };
         }
         case ListType.Read: {
             return { activeRevision: Not(IsNull()) };
@@ -65,6 +65,8 @@ const index: Handler<APIGatewayEvent> = async (event) => {
     };
 
     const condition = requestUserId === userId ? commonCondition : { ...commonCondition, isPublic: true };
+
+    console.log(condition);
 
     const reviews = await connection.getRepository(Review).find({
         where: condition,
