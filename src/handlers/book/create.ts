@@ -26,6 +26,10 @@ const index: Handler<APIGatewayEvent> = async (event) => {
         console.log(parsed);
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
+            },
             body: JSON.stringify({ book, bookId: book.id }),
         };
     } catch (e) {

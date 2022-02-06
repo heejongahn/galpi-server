@@ -1,7 +1,7 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
 import { getUser } from '../../getUser';
 
-const index: Handler<APIGatewayEvent> = async event => {
+const index: Handler<APIGatewayEvent> = async (event) => {
     const unauthorizedResponse = {
         statusCode: 401,
         body: `me: Unauthorized`,
@@ -15,6 +15,10 @@ const index: Handler<APIGatewayEvent> = async event => {
 
     return {
         statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+        },
         body: JSON.stringify({ user }),
     };
 };

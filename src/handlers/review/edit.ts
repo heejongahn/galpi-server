@@ -63,6 +63,10 @@ const index: Handler<APIGatewayEvent> = async (event) => {
 
         return {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': true,
+            },
             body: JSON.stringify({ review: createMergedReviewAndRevision({ review: updatedReview }) }),
         };
     } catch (e) {
