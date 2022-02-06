@@ -28,18 +28,15 @@ const index: Handler<APIGatewayEvent> = async (event) => {
     const requestUserId = validateUserResult.identified ? validateUserResult.userId : null;
     const requestUser = requestUserId != null ? await getUser(requestUserId) : null;
 
-    const condition = requestUserId == null ? { isPublic: true } : [{ isPublic: true }, { user: requestUser }];
-
-    const review = await connection.getRepository(Review).findOne(reviewId, {
-        where: condition,
-        order: {
-            createdAt: 'DESC',
-        },
-    });
-
-    console.log(review);
+    const review = await connection.getRepository(Review).findOne(reviewId);
 
     if (review == null) {
+        return getNoSuchReviewResponse(reviewId);
+    }
+
+    const canSeeReview = review.isPublic || review.user.id === requestUserId;
+
+    if (!canSeeReview) {
         return getNoSuchReviewResponse(reviewId);
     }
 
