@@ -48,13 +48,13 @@ export async function verifyFirebaseIdToken(idToken: string): Promise<VerifyResu
         return {
             success: true,
             token: result.uid,
-            email: result.email,
+            email: result.email as string,
         };
     } catch (e) {
         console.log(e);
         return {
             success: false,
-            reason: e.message,
+            reason: (e as Error).message,
         };
     }
 }

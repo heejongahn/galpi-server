@@ -52,6 +52,6 @@ export function decodeUserToken(token: string): DecodeResult {
             return { success: true, payload: decodedPayload };
         }
     } catch (e) {
-        return { success: false, reason: `Error while verifying: ${e.message}` };
+        return { success: false, reason: `Error while verifying: ${(e as Error).message}` };
     }
 }
