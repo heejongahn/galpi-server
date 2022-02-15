@@ -33,13 +33,17 @@ type VerifyResult = VerifySuccess | VerifyFailed;
 export async function verifyFirebaseIdToken(idToken: string): Promise<VerifyResult> {
     try {
         if (admin.apps.length === 0) {
+            console.log('no app');
             const data = await getFirebaseServiceAccount();
             admin.initializeApp({
                 credential: admin.credential.cert(data),
             });
         }
 
+        console.log('verifying');
+
         const result = await admin.auth().verifyIdToken(idToken);
+        console.log({ result });
 
         return {
             success: true,
@@ -47,6 +51,7 @@ export async function verifyFirebaseIdToken(idToken: string): Promise<VerifyResu
             email: result.email,
         };
     } catch (e) {
+        console.log(e);
         return {
             success: false,
             reason: e.message,
