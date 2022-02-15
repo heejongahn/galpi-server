@@ -1,8 +1,9 @@
 service: galpi-server
 provider:
     name: aws
-    runtime: nodejs10.x
+    runtime: nodejs14.x
     stage: ${env:STAGE}
+    timeout: 30
     vpc:
         securityGroupIds:
             - ${env:AWS_SECURITY_GROUP_ID}
